@@ -43,6 +43,7 @@ namespace Podcaster
             SearchView = new SearchPage();
             FavoritesView = new FavoritesPage();
             FavoritesView.DataContext = new FavoritesVM();
+            ((SearchVM)SearchView.DataContext).FavVM = (FavoritesVM)FavoritesView.DataContext;
             ContentFrame.NavigateToType(typeof(FavoritesPage), null, null);
         }
 

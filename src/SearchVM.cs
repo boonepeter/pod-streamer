@@ -42,6 +42,7 @@ namespace Podcaster
         }
 
         private ItunesAPI Itunes = new ItunesAPI();
+        public FavoritesVM FavVM;
 
         public SearchVM()
         {
@@ -50,6 +51,14 @@ namespace Podcaster
 
         public void SearchAddButton_Click(object sender, RoutedEventArgs e)
         {
+            if (sender.GetType() == typeof(Button))
+            {
+                Button button = (Button)sender;
+                if (button.DataContext.GetType() == typeof(SearchDisplay))
+                {
+                    FavVM.AddPodToFav((SearchDisplay)button.DataContext);
+                }
+            }
 
         }
 

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Media.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -22,9 +23,18 @@ namespace Podcaster
     /// </summary>
     public sealed partial class FavoritesPage : Page
     {
+        private FavoritesVM VMContext;
         public FavoritesPage()
         {
             this.InitializeComponent();
+            VMContext = new FavoritesVM();
+            DataContext = VMContext;
+        }
+
+        private void FavoritesListBox_Play_Click(object sender, RoutedEventArgs e)
+        {
+            VMContext.FavoritesListBox_Play(sender, e);
+            PlayBar.Source = VMContext.PlayBarSource;
         }
     }
 }

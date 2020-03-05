@@ -1,14 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Media.Core;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.Web.Syndication;
 
 namespace Podcaster
 {
-    class FavoritesVM
+    public class FavoritesVM : ObservableObject
     {
-        /*
+
+
+        private MediaSource _PlayBarSource;
+        public MediaSource PlayBarSource
+        {
+            get { return _PlayBarSource; }
+            set
+            {
+                if (value != _PlayBarSource)
+                {
+                    _PlayBarSource = value;
+                    OnPropertyChanged("PlayBarSource");
+                }
+            }
+        }
+        private ObservableCollection<SearchDisplay> _Favorites = new ObservableCollection<SearchDisplay>();
+        public ObservableCollection<SearchDisplay> Favorites
+        {
+            get { return _Favorites; }
+            set
+            {
+                if (value != _Favorites)
+                {
+                    _Favorites = value;
+                    OnPropertyChanged("Favorites");
+                }
+            }
+        }
+
 
         public void FavoritesListBox_Play(object sender, RoutedEventArgs args)
         {
@@ -37,10 +71,8 @@ namespace Podcaster
                                     {
                                         Uri episodeUri = link.Uri;
                                         toBreak = true;
-                                        using (var client = new WebClient())
-                                        {
-                                            SearchMedia.Source = MediaSource.CreateFromUri(episodeUri);
-                                        }
+                                        PlayBarSource = MediaSource.CreateFromUri(episodeUri);
+                                        
                                     }
                                 }
                             }
@@ -51,7 +83,11 @@ namespace Podcaster
             }
             catch { }
         }
-        */
 
+        public void AddPodToFav(SearchDisplay pod)
+        {
+            Favorites.Add(pod);
+        }
+        
     }
 }

@@ -8,7 +8,36 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
-        <TextBlock Text="Favorites"/>
+    <Grid Margin="10" Background="Orange">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="Hello world" VerticalAlignment="Bottom" Foreground="Black" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"/>
+        <MediaPlayerElement x:Name="PlayBar" Width="400" Height="100" VerticalAlignment="Bottom" Background="Orange" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Source="{Binding PlayBarSource}" AutoPlay="True"/>
+
+        <ListView Grid.Column="0" Height="Auto" Background="Transparent" MaxHeight="500" Grid.Row="0" x:Name="FavoritesList" ItemsSource="{Binding Favorites}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid VerticalAlignment="Center" CanDrag="True" HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="60"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Width="45" Height="45" HorizontalAlignment="Center" VerticalAlignment="Stretch"
+                                   Source="{Binding AlbumArt}" Grid.Column="0"/>
+                        <TextBlock Text="{Binding PodcastString}" Grid.Column="1" Margin="4"/>
+                        <Button Content="Add" Grid.Column="2" HorizontalAlignment="Right" x:Name="FavoritesListBox_Play" Click="FavoritesListBox_Play_Click"/>
+                    </Grid>
+                </DataTemplate>
+
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </Page>

@@ -18,4 +18,11 @@ namespace Podcaster
         }
 
     }
+
+    public class Episode
+    {
+        public bool HasListened;
+        public int CurrentListenTime;
+
+    }
 }
