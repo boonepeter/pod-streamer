@@ -22,9 +22,22 @@ namespace Podcaster
     /// </summary>
     public sealed partial class SearchPage : Page
     {
+        private SearchVM VMContext;
         public SearchPage()
         {
             this.InitializeComponent();
+            VMContext = new SearchVM();
+            DataContext = VMContext;
+        }
+
+        private void SearchAddButton_Click(object sender, RoutedEventArgs e)
+        {
+            VMContext.SearchAddButton_Click(sender, e);
+        }
+
+        private void SearchTextBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        {
+            VMContext.SearchTextBox_QuerySubmitted(sender, args);
         }
     }
 }

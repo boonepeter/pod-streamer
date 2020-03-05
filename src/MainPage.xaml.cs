@@ -34,7 +34,6 @@ namespace Podcaster
     public sealed partial class MainPage : Page
     {
         public ObservableCollection<SearchDisplay> Favorites = new ObservableCollection<SearchDisplay>();
-        private ItunesAPI Itunes;
         private SearchPage SearchView;
         private FavoritesPage FavoritesView = new FavoritesPage();
         public MainPage()
@@ -42,77 +41,25 @@ namespace Podcaster
             this.InitializeComponent();
 
             SearchView = new SearchPage();
-            SearchView.DataContext = new SearchVM();
             FavoritesView = new FavoritesPage();
             FavoritesView.DataContext = new FavoritesVM();
+            ContentFrame.NavigateToType(typeof(FavoritesPage), null, null);
         }
 
-        private void SearchButton_Click(object sender, AutoSuggestBoxQuerySubmittedEventArgs e)
+        private void NavigationView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
-            List<SearchResult> results = Itunes.SearchPodcast(SearchTextBox.Text);
-            ObservableCollection<SearchDisplay> listboxItems = new ObservableCollection<SearchDisplay>();
-            for (int i = 0; i < results.Count; i++)
+            switch (args.InvokedItemContainer.Content.ToString())
             {
-                listboxItems.Add(new SearchDisplay(results[i]));
+                case "Favorites":
+                    ContentFrame.Content = FavoritesView;
+                    break;
+                case "Search":
+                    ContentFrame.Content = SearchView;
+                    break;
             }
-            SearchListBox.ItemsSource = listboxItems;
+
         }
 
-        public void FavoritesListBox_Play(object sender, RoutedEventArgs args)
-        {
-            try
-            {
-                Button button = (Button)sender;
-                if (button.DataContext.GetType() == typeof(SearchDisplay))
-                {
-                    SearchDisplay displayedItem = (SearchDisplay)button.DataContext;
-                    using (var webClient = new WebClient())
-                    {
-                        var rss = webClient.DownloadString(displayedItem.FeedURL);
-                        SyndicationFeed feed = new SyndicationFeed();
-                        feed.Load(rss);
-                        bool toBreak = false;
-
-                        foreach (var item in feed.Items)
-                        {
-                            if (toBreak) break;
-                            if (item.Links.Count > 0)
-                            {
-                                var links = item.Links;
-                                foreach (var link in links)
-                                {
-                                    if (link.NodeName == "enclosure")
-                                    {
-                                        Uri episodeUri = link.Uri;
-                                        toBreak = true;
-                                        using (var client = new WebClient())
-                                        {
-                                            SearchMedia.Source = MediaSource.CreateFromUri(episodeUri);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                }
-            }
-            catch { }
-        }
-
-
-        private void SearchAddButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Button button = (Button)sender;
-                if (button.DataContext.GetType() == typeof(SearchDisplay))
-                {
-                    FavoritesListBox.Items.Add((SearchDisplay)button.DataContext);
-                }
-            }
-            catch { }
-        }
     }
     public class SearchDisplay
     {

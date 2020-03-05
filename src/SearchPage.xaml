@@ -22,8 +22,8 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <AutoSuggestBox x:Name="SearchTextBox" MinWidth="200" QueryIcon="Find" PlaceholderText="Search"
-                            QuerySubmitted="SearchButton_Click" Margin="5"/>
-            <ListBox x:Name="SearchListBox" Grid.Row="1" Margin="5" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                            QuerySubmitted="SearchTextBox_QuerySubmitted" Margin="5" Text="{Binding SearchText}"/>
+            <ListBox x:Name="SearchListBox" Grid.Row="1" Margin="5" ItemsSource="{Binding SearchResults}" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid VerticalAlignment="Center" CanDrag="True" HorizontalAlignment="Stretch">
