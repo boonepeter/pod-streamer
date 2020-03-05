@@ -1,17 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
+using Windows.Web.Syndication;
 
 namespace Podcaster
 {
     public class Searcher
     {
+
+        public static List<Episode> GetAllEpisodes(string feedURL)
+        {
+            List<Episode> episodes = new List<Episode>();
+            using (var webClient = new WebClient())
+            {
+                var rss = webClient.DownloadString(feedURL);
+                SyndicationFeed feed = new SyndicationFeed();
+                feed.Load(rss);
+
+                foreach (var item in feed.Items)
+                {
+                    Episode ep = new Episode();
+                    ep.Title = item.Title.Text;
+                    if (item.Links.Count > 0)
+                    {
+
+                        var links = item.Links;
+                        foreach (var link in links)
+                        {
+                            if (link.NodeName == "enclosure")
+                            {
+                                ep.StreamURL = link.Uri.AbsoluteUri;
+                                episodes.Add(ep);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+            }
+            return episodes;
+
+        }
+
     }
+
+
 
     public class ItunesAPI
     {
@@ -93,4 +132,5 @@ namespace Podcaster
         public List<string> genreIds { get; set; }
         public List<string> genres { get; set; }
     }
+
 }

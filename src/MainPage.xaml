@@ -17,9 +17,17 @@
             </NavigationViewItem>
 
         </NavigationView.MenuItems>
-        <Frame x:Name="ContentFrame">
-
-        </Frame>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Frame x:Name="ContentFrame" Grid.Row="0">
+            
+            </Frame>
+            <MediaPlayerElement x:Name="PlayBar" AreTransportControlsEnabled="True" Source="{Binding PlaySource}"
+                            VerticalAlignment="Bottom" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" AutoPlay="True"/>
+        </Grid>
     </NavigationView>
 
 </Page>

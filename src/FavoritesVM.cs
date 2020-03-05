@@ -14,7 +14,19 @@ namespace Podcaster
 {
     public class FavoritesVM : ObservableObject
     {
-
+        private ObservableCollection<Episode> _CurrentPodcastEpisodes;
+        public ObservableCollection<Episode> CurrentPodcastEpisodes
+        {
+            get { return _CurrentPodcastEpisodes; }
+            set
+            {
+                if (value != _CurrentPodcastEpisodes)
+                {
+                    _CurrentPodcastEpisodes = value;
+                    OnPropertyChanged("CurrentPodcastEpisodes");
+                }
+            }
+        }
 
         private MediaSource _PlayBarSource;
         public MediaSource PlayBarSource
@@ -29,6 +41,7 @@ namespace Podcaster
                 }
             }
         }
+
         private ObservableCollection<SearchDisplay> _Favorites = new ObservableCollection<SearchDisplay>();
         public ObservableCollection<SearchDisplay> Favorites
         {
@@ -49,36 +62,11 @@ namespace Podcaster
             try
             {
                 Button button = (Button)sender;
-                if (button.DataContext.GetType() == typeof(SearchDisplay))
+                if (button.DataContext.GetType() == typeof(Episode))
                 {
-                    SearchDisplay displayedItem = (SearchDisplay)button.DataContext;
-                    using (var webClient = new WebClient())
-                    {
-                        var rss = webClient.DownloadString(displayedItem.FeedURL);
-                        SyndicationFeed feed = new SyndicationFeed();
-                        feed.Load(rss);
-                        bool toBreak = false;
+                    Episode ep = (Episode)button.DataContext;
 
-                        foreach (var item in feed.Items)
-                        {
-                            if (toBreak) break;
-                            if (item.Links.Count > 0)
-                            {
-                                var links = item.Links;
-                                foreach (var link in links)
-                                {
-                                    if (link.NodeName == "enclosure")
-                                    {
-                                        Uri episodeUri = link.Uri;
-                                        toBreak = true;
-                                        PlayBarSource = MediaSource.CreateFromUri(episodeUri);
-                                        
-                                    }
-                                }
-                            }
-                        }
-
-                    }
+                    App.Current.Resources["PlaySource"] = ep.StreamURL;
                 }
             }
             catch { }
@@ -88,6 +76,20 @@ namespace Podcaster
         {
             Favorites.Add(pod);
         }
-        
+
+        public void FavoritesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender.GetType() == typeof(ListView))
+            {
+                ListView list = (ListView)sender;
+                if (list.SelectedItem != null && list.SelectedItem.GetType() == typeof(SearchDisplay))
+                {
+                    SearchDisplay pod = (SearchDisplay)list.SelectedItem;
+
+                    var episodes = Searcher.GetAllEpisodes(pod.FeedURL);
+                    CurrentPodcastEpisodes = new ObservableCollection<Episode>(episodes);
+                }
+            }
+        }
     }
 }

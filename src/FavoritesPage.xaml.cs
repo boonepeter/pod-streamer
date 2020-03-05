@@ -34,7 +34,12 @@ namespace Podcaster
         private void FavoritesListBox_Play_Click(object sender, RoutedEventArgs e)
         {
             VMContext.FavoritesListBox_Play(sender, e);
-            PlayBar.Source = VMContext.PlayBarSource;
+        }
+
+        private void FavoritesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            VMContext.FavoritesList_SelectionChanged(sender, e);
+            EpisodeList.ItemsSource = VMContext.CurrentPodcastEpisodes;
         }
     }
 }
