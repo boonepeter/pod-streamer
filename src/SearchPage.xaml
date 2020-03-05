@@ -1,0 +1,45 @@
+﻿<Page
+    x:Class="Podcaster.SearchPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Podcaster"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="1" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <AutoSuggestBox x:Name="SearchTextBox" MinWidth="200" QueryIcon="Find" PlaceholderText="Search"
+                            QuerySubmitted="SearchButton_Click" Margin="5"/>
+            <ListBox x:Name="SearchListBox" Grid.Row="1" Margin="5" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid VerticalAlignment="Center" CanDrag="True" HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Width="45" Height="45" HorizontalAlignment="Center" VerticalAlignment="Stretch"
+                                   Source="{Binding AlbumArt}" Grid.Column="0"/>
+                            <TextBlock Text="{Binding PodcastString}" Grid.Column="1" Margin="4"/>
+                            <Button Content="Add" Grid.Column="2" HorizontalAlignment="Right" x:Name="SearchAddButton" Click="SearchAddButton_Click"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Grid>
+</Page>
