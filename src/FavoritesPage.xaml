@@ -19,7 +19,7 @@
         <ListView Grid.Column="0" Height="Auto" Background="Transparent" x:Name="FavoritesList" ItemsSource="{Binding Favorites}" SelectionChanged="FavoritesList_SelectionChanged">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid VerticalAlignment="Center" CanDrag="True" HorizontalAlignment="Stretch">
+                    <Grid VerticalAlignment="Center" Background="Transparent" HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="50"/>
                             <ColumnDefinition Width="*"/>

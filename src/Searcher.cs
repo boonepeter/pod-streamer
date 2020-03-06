@@ -66,9 +66,16 @@ namespace Podcaster
             string URL = BaseURL + "search?term=" + name + "&entity=podcast";
             var searches = new List<SearchResult>();
             string text = "";
-            using (var webClient = new System.Net.WebClient())
+            try
             {
-                text = webClient.DownloadString(URL);
+                using (var webClient = new System.Net.WebClient())
+                {
+                    text = webClient.DownloadString(URL);
+                }
+            }
+            catch (WebException e)
+            {
+                return searches;
             }
 
             Newtonsoft.Json.Linq.JObject output = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(text);
