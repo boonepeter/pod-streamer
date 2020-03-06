@@ -23,10 +23,12 @@ namespace Podcaster
     public sealed partial class SearchPage : Page
     {
         private SearchVM VMContext;
-        public SearchPage()
+        private MainPage mainP;
+        public SearchPage(MainPage mainPage)
         {
             this.InitializeComponent();
-            VMContext = new SearchVM();
+            VMContext = new SearchVM(mainPage);
+            mainP = mainPage;
             DataContext = VMContext;
         }
 

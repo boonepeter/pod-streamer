@@ -36,13 +36,12 @@
         <ListView Grid.Column="1"  x:Name="EpisodeList" ItemsSource="{Binding CurrentPodcastEpisodes}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid VerticalAlignment="Center" Background="Transparent" IsHitTestVisible="False" HorizontalAlignment="Stretch">
+                    <Grid VerticalAlignment="Center" Background="Transparent" HorizontalAlignment="Stretch" DoubleTapped="Grid_DoubleTapped">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="60"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{Binding Title}"/>
-                        <Button Content="Play" Grid.Column="2" HorizontalAlignment="Right" x:Name="FavoritesListBox_Play" Click="FavoritesListBox_Play_Click"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>

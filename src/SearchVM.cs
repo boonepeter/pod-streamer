@@ -44,9 +44,10 @@ namespace Podcaster
         private ItunesAPI Itunes = new ItunesAPI();
         public FavoritesVM FavVM;
 
-        public SearchVM()
+        private MainPage MainP;
+        public SearchVM(MainPage mainPage)
         {
-
+            MainP = mainPage;
         }
 
         public void SearchAddButton_Click(object sender, RoutedEventArgs e)

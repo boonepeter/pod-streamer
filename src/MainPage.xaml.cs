@@ -35,16 +35,15 @@ namespace Podcaster
     {
         public ObservableCollection<SearchDisplay> Favorites = new ObservableCollection<SearchDisplay>();
         private SearchPage SearchView;
-        private FavoritesPage FavoritesView = new FavoritesPage();
+        private FavoritesPage FavoritesView;
         public MainPage()
         {
             this.InitializeComponent();
 
-            SearchView = new SearchPage();
-            FavoritesView = new FavoritesPage();
-            FavoritesView.DataContext = new FavoritesVM();
+            SearchView = new SearchPage(this);
+            FavoritesView = new FavoritesPage(this);
+            ContentFrame.Content = FavoritesView;
             ((SearchVM)SearchView.DataContext).FavVM = (FavoritesVM)FavoritesView.DataContext;
-            ContentFrame.NavigateToType(typeof(FavoritesPage), null, null);
         }
 
         private void NavigationView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
@@ -59,6 +58,11 @@ namespace Podcaster
                     break;
             }
 
+        }
+
+        public void PlayFromSource(Uri source)
+        {
+            PlayBar.Source = MediaSource.CreateFromUri(source);
         }
 
     }

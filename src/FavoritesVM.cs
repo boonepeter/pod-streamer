@@ -56,17 +56,22 @@ namespace Podcaster
             }
         }
 
+        private MainPage MainP;
+        public FavoritesVM(MainPage mainPage)
+        {
+            MainP = mainPage;
+        }
 
         public void FavoritesListBox_Play(object sender, RoutedEventArgs args)
         {
             try
             {
-                Button button = (Button)sender;
-                if (button.DataContext.GetType() == typeof(Episode))
+                FrameworkElement element = (FrameworkElement)sender;
+                if (element.DataContext.GetType() == typeof(Episode))
                 {
-                    Episode ep = (Episode)button.DataContext;
+                    Episode ep = (Episode)element.DataContext;
 
-                    App.Current.Resources["PlaySource"] = ep.StreamURL;
+                    MainP.PlayFromSource(new Uri(ep.StreamURL));
                 }
             }
             catch { }
