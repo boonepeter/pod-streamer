@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -7,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.Web.Syndication;
 
 namespace Podcaster
@@ -47,7 +49,6 @@ namespace Podcaster
             return episodes;
 
         }
-
     }
 
 
@@ -60,11 +61,11 @@ namespace Podcaster
 
         }
 
-        public List<SearchResult> SearchPodcast(string name)
+        public List<BasePodcast> SearchPodcast(string name)
         {
             name = Regex.Replace(name, " ", "+");
             string URL = BaseURL + "search?term=" + name + "&entity=podcast";
-            var searches = new List<SearchResult>();
+            var searches = new List<BasePodcast>();
             string text = "";
             try
             {
@@ -92,7 +93,7 @@ namespace Podcaster
                         var results = child.First;
                         for (int i = 0; i < results.Count(); i++)
                         {
-                            SearchResult searchResult = results[i].ToObject<SearchResult>();
+                            BasePodcast searchResult = results[i].ToObject<BasePodcast>();
                             searches.Add(searchResult);
                         }
                     }
@@ -101,8 +102,53 @@ namespace Podcaster
             return searches;
 
         }
+
+        public List<Podcast> SearchPodcasts(string name)
+        {
+            name = Regex.Replace(name, " ", "+");
+            string URL = BaseURL + "search?term=" + name + "&entity=podcast";
+            var searches = new List<Podcast>();
+            string text = "";
+            try
+            {
+                using (var webClient = new System.Net.WebClient())
+                {
+                    text = webClient.DownloadString(URL);
+                }
+            }
+            catch (WebException e)
+            {
+                return searches;
+            }
+
+            Newtonsoft.Json.Linq.JObject output = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(text);
+            foreach (var child in output.Children())
+            {
+                if (child.HasValues)
+                {
+                    if (child.Path == "resultCount")
+                    {
+                        continue;
+                    }
+                    else if (child.Path == "results")
+                    {
+                        var results = child.First;
+                        for (int i = 0; i < results.Count(); i++)
+                        {
+                            BasePodcast searchResult = results[i].ToObject<BasePodcast>();
+                            Podcast pod = (Podcast)searchResult;
+                            pod.AlbumArt = new BitmapImage(new Uri(pod.artworkUrl600));
+                            searches.Add(pod);
+                        }
+                    }
+                }
+            }
+            return searches;
+
+
+        }
     }
-    public class SearchResult
+    public class BasePodcast : ObservableObject
     {
         public string wrapperType { get; set; }
         public string kind { get; set; }
@@ -138,6 +184,44 @@ namespace Podcaster
         public string artworkUrl600 { get; set; }
         public List<string> genreIds { get; set; }
         public List<string> genres { get; set; }
+
+        private BitmapImage _AlbumArt;
+        public BitmapImage AlbumArt
+        {
+            get { return _AlbumArt; }
+            set
+            {
+                if (value != _AlbumArt)
+                {
+                    _AlbumArt = value;
+                    OnPropertyChanged("AlbumArt");
+                }
+            }
+        }
+
+        private ObservableCollection<Episode> _Episodes;
+        public ObservableCollection<Episode> Episodes
+        {
+            get { return _Episodes; }
+            set
+            {
+                if (value != _Episodes)
+                {
+                    _Episodes = value;
+                    OnPropertyChanged("Episodes");
+                }
+            }
+        }
+
+
+        public void UpdateEpisodes()
+        {
+            if (feedUrl != null)
+            {
+                Episodes = new ObservableCollection<Episode>(Searcher.GetAllEpisodes(feedUrl));
+            }
+        }
+
     }
 
 }

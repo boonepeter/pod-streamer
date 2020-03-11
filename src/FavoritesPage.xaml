@@ -12,27 +12,31 @@
         <Grid.RowDefinitions>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
+        <Border Grid.Column="0" MinWidth="150" BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,1,0">
+            <ListView Grid.Column="0" Height="Auto" Background="Transparent" x:Name="FavoritesList" ItemsSource="{Binding Favorites.Podcasts}" SelectionChanged="FavoritesList_SelectionChanged">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid VerticalAlignment="Center" Margin="0,5" Background="Transparent" HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="Auto" MinWidth="150"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                                   Source="{Binding artworkUrl100}" Grid.Column="0"/>
+                            <StackPanel Margin="10,4" Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding collectionName}"/>
+                                <TextBlock Text="{Binding artistName}" Opacity="0.4" FontSize="12"/>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
 
-        <ListView Grid.Column="0" Height="Auto" Background="Transparent" x:Name="FavoritesList" ItemsSource="{Binding Favorites}" SelectionChanged="FavoritesList_SelectionChanged">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Grid VerticalAlignment="Center" Background="Transparent" HorizontalAlignment="Stretch">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="50"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Image Width="45" Height="45" HorizontalAlignment="Center" VerticalAlignment="Stretch"
-                                   Source="{Binding AlbumArt}" Grid.Column="0"/>
-                        <TextBlock Text="{Binding PodcastString}" Grid.Column="1" Margin="4"/>
-                    </Grid>
-                </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Border>
 
-            </ListView.ItemTemplate>
-        </ListView>
-    
         <ListView Grid.Column="1"  x:Name="EpisodeList" ItemsSource="{Binding CurrentPodcastEpisodes}">
             <ListView.ItemTemplate>
                 <DataTemplate>

@@ -26,15 +26,15 @@
             <ListBox x:Name="SearchListBox" Grid.Row="1" Margin="5" ItemsSource="{Binding SearchResults}" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid VerticalAlignment="Center" CanDrag="True" HorizontalAlignment="Stretch">
+                        <Grid VerticalAlignment="Center" CanDrag="True" HorizontalAlignment="Stretch" Background="Transparent" IsHitTestVisible="True">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="50"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="60"/>
                             </Grid.ColumnDefinitions>
                             <Image Width="45" Height="45" HorizontalAlignment="Center" VerticalAlignment="Stretch"
-                                   Source="{Binding AlbumArt}" Grid.Column="0"/>
-                            <TextBlock Text="{Binding PodcastString}" Grid.Column="1" Margin="4"/>
+                                   Source="{Binding artworkUrl100}" Grid.Column="0"/>
+                            <TextBlock Text="{Binding collectionName}" Grid.Column="1" Margin="4"/>
                             <Button Content="Add" Grid.Column="2" HorizontalAlignment="Right" x:Name="SearchAddButton" Click="SearchAddButton_Click"/>
                         </Grid>
                     </DataTemplate>

@@ -1,22 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Podcaster
 {
-    public class Podcast
+    public class Podcast : BasePodcast
     {
-        public string Name;
-        public string Website;
-        public string FeedUrl;
-        public string Artist;
-        public string Description;
-        public List<Episode> Episodes;
+        private BitmapImage _AlbumArt;
+        public BitmapImage AlbumArt
+        {
+            get { return _AlbumArt; }
+            set
+            {
+                if (value != _AlbumArt)
+                {
+                    _AlbumArt = value;
+                    OnPropertyChanged("AlbumArt");
+                }
+            }
+        }
+
+        private ObservableCollection<Episode> _Episodes;
+        public ObservableCollection<Episode> Episodes
+        {
+            get { return _Episodes; }
+            set
+            {
+                if (value != _Episodes)
+                {
+                    _Episodes = value;
+                    OnPropertyChanged("Episodes");
+                }
+            }
+        }
 
         public Podcast()
         {
@@ -25,29 +48,42 @@ namespace Podcaster
 
         public void UpdateEpisodes()
         {
-            if (FeedUrl != null)
+            if (feedUrl != null)
             {
-                Episodes = Searcher.GetAllEpisodes(FeedUrl);
+                Episodes = new ObservableCollection<Episode>(Searcher.GetAllEpisodes(feedUrl));
             }
         }
     }
 
-    public class Library
+    public class Library : ObservableObject
     {
-        public List<Podcast> Podcasts;
+
+        private ObservableCollection<BasePodcast> _Podcasts = new ObservableCollection<BasePodcast>();
+        public ObservableCollection<BasePodcast> Podcasts
+        {
+            get { return _Podcasts; }
+            set
+            {
+                if (value != _Podcasts)
+                {
+                    _Podcasts = value;
+                    OnPropertyChanged("Podcasts");
+                }
+            }
+        }
 
         public void Save(string filename)
         {
-            Serializers.SerializeObject<List<Podcast>>(Podcasts, filename);
+            Serializers.SerializeObject(Podcasts, filename);
         }
 
         public static Library Open(string filename)
         {
-            var podcasts = Serializers.DeseralizeObject<List<Podcast>>(filename);
+            var podcasts = Serializers.DeseralizeObject<List<BasePodcast>>(filename);
             if (podcasts != null)
             {
                 Library library = new Library();
-                library.Podcasts = podcasts;
+                library.Podcasts = new ObservableCollection<BasePodcast>(podcasts);
                 return library;
             }
             return null;
@@ -56,7 +92,6 @@ namespace Podcaster
 
     public class Episode : ObservableObject
     {
-
         private bool _HasListened;
         public bool HasListened
         {
@@ -70,7 +105,6 @@ namespace Podcaster
                 }
             }
         }
-
 
         private int _CurrentListenTime;
         public int CurrentListenTime
@@ -86,7 +120,6 @@ namespace Podcaster
             }
         }
 
-
         private string _Title;
         public string Title
         {
@@ -101,7 +134,6 @@ namespace Podcaster
             }
         }
 
-
         private int _PodcastId;
         public int PodcastId
         {
@@ -115,7 +147,6 @@ namespace Podcaster
                 }
             }
         }
-
 
         private string _StreamURL;
         public string StreamURL

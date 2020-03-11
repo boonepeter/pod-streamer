@@ -42,8 +42,8 @@ namespace Podcaster
             }
         }
 
-        private ObservableCollection<SearchDisplay> _Favorites = new ObservableCollection<SearchDisplay>();
-        public ObservableCollection<SearchDisplay> Favorites
+        private Library _Favorites;
+        public Library Favorites
         {
             get { return _Favorites; }
             set
@@ -60,6 +60,7 @@ namespace Podcaster
         public FavoritesVM(MainPage mainPage)
         {
             MainP = mainPage;
+            Favorites = new Library();
         }
 
         public void FavoritesListBox_Play(object sender, RoutedEventArgs args)
@@ -77,9 +78,9 @@ namespace Podcaster
             catch { }
         }
 
-        public void AddPodToFav(SearchDisplay pod)
+        public void AddPodToFav(BasePodcast pod)
         {
-            Favorites.Add(pod);
+            Favorites.Podcasts.Add(pod);
         }
 
         public void FavoritesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -87,12 +88,18 @@ namespace Podcaster
             if (sender.GetType() == typeof(ListView))
             {
                 ListView list = (ListView)sender;
-                if (list.SelectedItem != null && list.SelectedItem.GetType() == typeof(SearchDisplay))
+                if (list.SelectedItem != null && list.SelectedItem.GetType() == typeof(BasePodcast))
                 {
-                    SearchDisplay pod = (SearchDisplay)list.SelectedItem;
-
-                    var episodes = Searcher.GetAllEpisodes(pod.FeedURL);
-                    CurrentPodcastEpisodes = new ObservableCollection<Episode>(episodes);
+                    BasePodcast pod = (BasePodcast)list.SelectedItem;
+                    if (pod.Episodes != null && pod.Episodes.Count > 0)
+                    {
+                        CurrentPodcastEpisodes = pod.Episodes;
+                    }
+                    else
+                    {
+                        pod.Episodes = new ObservableCollection<Episode>(Searcher.GetAllEpisodes(pod.feedUrl));
+                        CurrentPodcastEpisodes = pod.Episodes;
+                    }
                 }
             }
         }

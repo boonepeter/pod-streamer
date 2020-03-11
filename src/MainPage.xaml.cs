@@ -71,7 +71,7 @@ namespace Podcaster
         public string PodcastString { get; set; }
         public BitmapImage AlbumArt { get; set; }
         public string FeedURL { get; set; }
-        public SearchDisplay(SearchResult result)
+        public SearchDisplay(BasePodcast result)
         {
             AlbumArt = new BitmapImage();
             AlbumArt.UriSource = new Uri(result.artworkUrl100);

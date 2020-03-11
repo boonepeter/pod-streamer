@@ -6,14 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Podcaster
 {
     public class SearchVM : ObservableObject
     {
 
-        private ObservableCollection<SearchDisplay> _SearchResults;
-        public ObservableCollection<SearchDisplay> SearchResults
+        private ObservableCollection<BasePodcast> _SearchResults;
+        public ObservableCollection<BasePodcast> SearchResults
         {
             get { return _SearchResults; }
             set
@@ -55,9 +56,10 @@ namespace Podcaster
             if (sender.GetType() == typeof(Button))
             {
                 Button button = (Button)sender;
-                if (button.DataContext.GetType() == typeof(SearchDisplay))
+                if (button.DataContext.GetType() == typeof(BasePodcast))
                 {
-                    FavVM.AddPodToFav((SearchDisplay)button.DataContext);
+                    BasePodcast searchResult = (BasePodcast)button.DataContext;
+                    FavVM.AddPodToFav(searchResult);
                 }
             }
 
@@ -66,11 +68,11 @@ namespace Podcaster
 
         public void SearchTextBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-            List<SearchResult> results = Itunes.SearchPodcast(sender.Text);
-            ObservableCollection<SearchDisplay> listboxItems = new ObservableCollection<SearchDisplay>();
+            List<BasePodcast> results = Itunes.SearchPodcast(sender.Text);
+            ObservableCollection<BasePodcast> listboxItems = new ObservableCollection<BasePodcast>();
             for (int i = 0; i < results.Count; i++)
             {
-                listboxItems.Add(new SearchDisplay(results[i]));
+                listboxItems.Add(results[i]);
             }
             SearchResults = listboxItems;
         }
