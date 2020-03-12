@@ -7,6 +7,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -90,9 +91,15 @@ namespace Podcaster
         /// </summary>
         /// <param name="sender">The source of the suspend request.</param>
         /// <param name="e">Details about the suspend request.</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
+            var wind = Window.Current;
+            var mp = (MainPage)((Frame)Window.Current.Content).Content;
+            var installFolder = ApplicationData.Current.LocalFolder;
+            installFolder = await installFolder.CreateFolderAsync("userData", CreationCollisionOption.OpenIfExists);
+            var file = Path.Combine(installFolder.Path, "userdata.xml");
+            mp.FavVM.Favorites.Save(file);
             //TODO: Save application state and stop any background activity
             deferral.Complete();
         }

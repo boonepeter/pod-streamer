@@ -102,52 +102,8 @@ namespace Podcaster
             return searches;
 
         }
-
-        public List<Podcast> SearchPodcasts(string name)
-        {
-            name = Regex.Replace(name, " ", "+");
-            string URL = BaseURL + "search?term=" + name + "&entity=podcast";
-            var searches = new List<Podcast>();
-            string text = "";
-            try
-            {
-                using (var webClient = new System.Net.WebClient())
-                {
-                    text = webClient.DownloadString(URL);
-                }
-            }
-            catch (WebException e)
-            {
-                return searches;
-            }
-
-            Newtonsoft.Json.Linq.JObject output = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(text);
-            foreach (var child in output.Children())
-            {
-                if (child.HasValues)
-                {
-                    if (child.Path == "resultCount")
-                    {
-                        continue;
-                    }
-                    else if (child.Path == "results")
-                    {
-                        var results = child.First;
-                        for (int i = 0; i < results.Count(); i++)
-                        {
-                            BasePodcast searchResult = results[i].ToObject<BasePodcast>();
-                            Podcast pod = (Podcast)searchResult;
-                            pod.AlbumArt = new BitmapImage(new Uri(pod.artworkUrl600));
-                            searches.Add(pod);
-                        }
-                    }
-                }
-            }
-            return searches;
-
-
-        }
     }
+
     public class BasePodcast : ObservableObject
     {
         public string wrapperType { get; set; }
@@ -184,20 +140,6 @@ namespace Podcaster
         public string artworkUrl600 { get; set; }
         public List<string> genreIds { get; set; }
         public List<string> genres { get; set; }
-
-        private BitmapImage _AlbumArt;
-        public BitmapImage AlbumArt
-        {
-            get { return _AlbumArt; }
-            set
-            {
-                if (value != _AlbumArt)
-                {
-                    _AlbumArt = value;
-                    OnPropertyChanged("AlbumArt");
-                }
-            }
-        }
 
         private ObservableCollection<Episode> _Episodes;
         public ObservableCollection<Episode> Episodes

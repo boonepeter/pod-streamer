@@ -7,54 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
+using Windows.Storage;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace Podcaster
 {
-    public class Podcast : BasePodcast
-    {
-        private BitmapImage _AlbumArt;
-        public BitmapImage AlbumArt
-        {
-            get { return _AlbumArt; }
-            set
-            {
-                if (value != _AlbumArt)
-                {
-                    _AlbumArt = value;
-                    OnPropertyChanged("AlbumArt");
-                }
-            }
-        }
-
-        private ObservableCollection<Episode> _Episodes;
-        public ObservableCollection<Episode> Episodes
-        {
-            get { return _Episodes; }
-            set
-            {
-                if (value != _Episodes)
-                {
-                    _Episodes = value;
-                    OnPropertyChanged("Episodes");
-                }
-            }
-        }
-
-        public Podcast()
-        {
-
-        }
-
-        public void UpdateEpisodes()
-        {
-            if (feedUrl != null)
-            {
-                Episodes = new ObservableCollection<Episode>(Searcher.GetAllEpisodes(feedUrl));
-            }
-        }
-    }
-
+    [Serializable, XmlRoot("Library")]
     public class Library : ObservableObject
     {
 
@@ -74,17 +32,17 @@ namespace Podcaster
 
         public void Save(string filename)
         {
-            Serializers.SerializeObject(Podcasts, filename);
+            Serializers.SerializeObject(this, filename);
         }
 
-        public static Library Open(string filename)
+        public async static Task<Library> Open(string filename)
         {
-            var podcasts = Serializers.DeseralizeObject<List<BasePodcast>>(filename);
+            var data = await ApplicationData.Current.LocalFolder.GetFolderAsync("userData");
+            var file = Path.Combine(data.Path, "userData.xml");
+            var podcasts = Serializers.DeseralizeObject<Library>(file);
             if (podcasts != null)
             {
-                Library library = new Library();
-                library.Podcasts = new ObservableCollection<BasePodcast>(podcasts);
-                return library;
+                return podcasts;
             }
             return null;
         }

@@ -60,7 +60,7 @@ namespace Podcaster
         public FavoritesVM(MainPage mainPage)
         {
             MainP = mainPage;
-            Favorites = new Library();
+            OpenFavorites();
         }
 
         public void FavoritesListBox_Play(object sender, RoutedEventArgs args)
@@ -101,6 +101,19 @@ namespace Podcaster
                         CurrentPodcastEpisodes = pod.Episodes;
                     }
                 }
+            }
+        }
+
+        public async void OpenFavorites()
+        {
+            var lib = await Library.Open("userData.xml");
+            if (lib != null)
+            {
+                Favorites = lib;
+            }
+            else
+            {
+                Favorites = new Library();
             }
         }
     }

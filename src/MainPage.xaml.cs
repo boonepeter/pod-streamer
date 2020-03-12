@@ -14,7 +14,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
-
 using System.Xml;
 using System.Xml.Serialization;
 using System.ServiceModel;
@@ -36,6 +35,8 @@ namespace Podcaster
         public ObservableCollection<SearchDisplay> Favorites = new ObservableCollection<SearchDisplay>();
         private SearchPage SearchView;
         private FavoritesPage FavoritesView;
+        public FavoritesVM FavVM;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -44,6 +45,7 @@ namespace Podcaster
             FavoritesView = new FavoritesPage(this);
             ContentFrame.Content = FavoritesView;
             ((SearchVM)SearchView.DataContext).FavVM = (FavoritesVM)FavoritesView.DataContext;
+            FavVM = (FavoritesVM)FavoritesView.DataContext;
         }
 
         private void NavigationView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
@@ -65,6 +67,14 @@ namespace Podcaster
             PlayBar.Source = MediaSource.CreateFromUri(source);
         }
 
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+        }
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            base.OnNavigatingFrom(e);
+        }
     }
     public class SearchDisplay
     {
