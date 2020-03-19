@@ -4,4 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Podcaster">
 
+    <Application.Resources>
+        <ResourceDictionary Source="./Resource/ResourceDictionary.xaml"/>
+    </Application.Resources>
 </Application>

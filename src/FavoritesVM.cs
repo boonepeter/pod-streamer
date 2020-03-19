@@ -42,6 +42,21 @@ namespace Podcaster
             }
         }
 
+
+        private BasePodcast _SelectedPodcast;
+        public BasePodcast SelectedPodcast
+        {
+            get { return _SelectedPodcast; }
+            set
+            {
+                if (value != _SelectedPodcast)
+                {
+                    _SelectedPodcast = value;
+                    OnPropertyChanged("SelectedPodcast");
+                }
+            }
+        }
+
         private Library _Favorites;
         public Library Favorites
         {
@@ -67,13 +82,10 @@ namespace Podcaster
         {
             try
             {
-                FrameworkElement element = (FrameworkElement)sender;
-                if (element.DataContext.GetType() == typeof(Episode))
-                {
-                    Episode ep = (Episode)element.DataContext;
-
-                    MainP.PlayFromSource(new Uri(ep.StreamURL));
-                }
+                FrameworkElement element = (FrameworkElement)args.OriginalSource;
+                Episode ep = (Episode)element.DataContext;
+                MainP.PlayFromSource(new Uri(ep.StreamURL));
+                ep.HasListened = true;
             }
             catch { }
         }
@@ -83,24 +95,29 @@ namespace Podcaster
             Favorites.Podcasts.Add(pod);
         }
 
-        public void FavoritesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        public async void FavoritesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (sender.GetType() == typeof(ListView))
+            var pod = SelectedPodcast;
+            if (pod != null)
             {
-                ListView list = (ListView)sender;
-                if (list.SelectedItem != null && list.SelectedItem.GetType() == typeof(BasePodcast))
+                var eps = await Task.Run(() => pod?.UpdateEpisodes());
+                if (pod.Episodes is null || pod.Episodes.Count != eps.Count)
                 {
-                    BasePodcast pod = (BasePodcast)list.SelectedItem;
-                    if (pod.Episodes != null && pod.Episodes.Count > 0)
-                    {
-                        CurrentPodcastEpisodes = pod.Episodes;
-                    }
-                    else
-                    {
-                        pod.Episodes = new ObservableCollection<Episode>(Searcher.GetAllEpisodes(pod.feedUrl));
-                        CurrentPodcastEpisodes = pod.Episodes;
-                    }
+                    pod.Episodes = new ObservableCollection<Episode>(eps);
                 }
+            }
+        }
+
+        public void RemovePodcast(object sender, RoutedEventArgs args)
+        {
+            try
+            {
+                FrameworkElement el = (FrameworkElement)args.OriginalSource;
+                Favorites.Podcasts.Remove((BasePodcast)el.DataContext);
+            }
+            catch
+            {
+                string peter = "error";
             }
         }
 

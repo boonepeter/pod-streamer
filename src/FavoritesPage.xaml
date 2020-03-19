@@ -5,6 +5,8 @@
     xmlns:local="using:Podcaster"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:is="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -15,21 +17,38 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Border Grid.Column="0" MinWidth="150" BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,1,0">
-            <ListView Grid.Column="0" Height="Auto" Background="Transparent" x:Name="FavoritesList" ItemsSource="{Binding Favorites.Podcasts}" SelectionChanged="FavoritesList_SelectionChanged">
+        <Border Grid.Column="0" MinWidth="250" BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,1,0">
+            <ListView Grid.Column="0" Height="Auto" Background="Transparent" x:Name="FavoritesList" ItemsSource="{Binding Favorites.Podcasts}"
+                      SelectedItem="{Binding SelectedPodcast, Mode=TwoWay}" >
+                <i:Interaction.Behaviors>
+                    <is:EventTriggerBehavior EventName="SelectionChanged">
+                        <is:CallMethodAction MethodName="FavoritesList_SelectionChanged" TargetObject="{Binding}"/>
+                    </is:EventTriggerBehavior>
+                </i:Interaction.Behaviors>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid VerticalAlignment="Center" Margin="0,5" Background="Transparent" HorizontalAlignment="Stretch">
+                        <Grid VerticalAlignment="Center" Margin="0,5" Background="Transparent" HorizontalAlignment="Stretch" MinWidth="300">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="50"/>
-                                <ColumnDefinition Width="Auto" MinWidth="150"/>
+                                <ColumnDefinition Width="*" MinWidth="150"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Image Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                                    Source="{Binding artworkUrl100}" Grid.Column="0"/>
                             <StackPanel Margin="10,4" Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding collectionName}"/>
-                                <TextBlock Text="{Binding artistName}" Opacity="0.4" FontSize="12"/>
+                                <TextBlock Text="{Binding collectionName}" TextWrapping="WrapWholeWords" MaxWidth="200"/>
+                                <TextBlock Text="{Binding artistName}" Opacity="0.4" FontSize="12" TextWrapping="WrapWholeWords" MaxWidth="200"/>
                             </StackPanel>
+                            <Button Grid.Column="2" Style="{StaticResource IconButton}">
+                                <i:Interaction.Behaviors>
+                                    <is:EventTriggerBehavior EventName="Click">
+                                        <is:CallMethodAction MethodName="RemovePodcast" TargetObject="{Binding ElementName=FavoritesList, Path=DataContext}"/>
+                                    </is:EventTriggerBehavior>
+                                </i:Interaction.Behaviors>
+                                <Viewbox Width="20">
+                                    <SymbolIcon Symbol="Delete"/>
+                                </Viewbox>
+                            </Button>
                         </Grid>
                     </DataTemplate>
 
@@ -37,15 +56,35 @@
             </ListView>
         </Border>
 
-        <ListView Grid.Column="1"  x:Name="EpisodeList" ItemsSource="{Binding CurrentPodcastEpisodes}">
+        <ListView Grid.Column="1"  x:Name="EpisodeList" ItemsSource="{Binding SelectedPodcast.Episodes}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid VerticalAlignment="Center" Background="Transparent" HorizontalAlignment="Stretch" DoubleTapped="Grid_DoubleTapped">
+                    <Grid VerticalAlignment="Center" Background="Transparent" HorizontalAlignment="Stretch">
+                        <i:Interaction.Behaviors>
+                            <is:EventTriggerBehavior EventName="DoubleTapped">
+                                <is:CallMethodAction MethodName="FavoritesListBox_Play" TargetObject="{Binding ElementName=EpisodeList, Path=DataContext}"/>
+                            </is:EventTriggerBehavior>
+                        </i:Interaction.Behaviors>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Title}"/>
+                        <Button Grid.Column="0" Style="{StaticResource IconButton}">
+                            <i:Interaction.Behaviors>
+                                <is:EventTriggerBehavior EventName="Click">
+                                    <is:CallMethodAction MethodName="FavoritesListBox_Play" TargetObject="{Binding ElementName=EpisodeList, Path=DataContext}"/>
+                                </is:EventTriggerBehavior>
+                            </i:Interaction.Behaviors>
+                            <Viewbox Width="20" VerticalAlignment="Center">
+                            <StackPanel>
+                                <SymbolIcon Symbol="Accept"  Visibility="{Binding HasListened}"/>
+                                <SymbolIcon Symbol="Play"  Visibility="{Binding HasListened, Converter={StaticResource InvertBool}}"/>
+                            </StackPanel>
+                                
+                            </Viewbox>
+                        </Button>
+                        
+                        <TextBlock Text="{Binding Title}" Grid.Column="1" Margin="4"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>

@@ -23,28 +23,10 @@ namespace Podcaster
     /// </summary>
     public sealed partial class FavoritesPage : Page
     {
-        private FavoritesVM VMContext;
-        private MainPage mainP;
         public FavoritesPage(MainPage mainPage)
         {
             this.InitializeComponent();
-            VMContext = new FavoritesVM(mainPage);
-            DataContext = VMContext;
-        }
-
-        private void FavoritesListBox_Play_Click(object sender, RoutedEventArgs e)
-        {
-            VMContext.FavoritesListBox_Play(sender, e);
-        }
-
-        private void FavoritesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            VMContext.FavoritesList_SelectionChanged(sender, e);
-        }
-
-        private void Grid_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
-        {
-            VMContext.FavoritesListBox_Play(sender, e);
+            DataContext = new FavoritesVM(mainPage);
         }
     }
 }

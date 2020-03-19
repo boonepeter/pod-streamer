@@ -5,6 +5,8 @@
     xmlns:local="using:Podcaster"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:is="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Grid>
@@ -22,20 +24,39 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <AutoSuggestBox x:Name="SearchTextBox" MinWidth="200" QueryIcon="Find" PlaceholderText="Search"
-                            QuerySubmitted="SearchTextBox_QuerySubmitted" Margin="5" Text="{Binding SearchText}"/>
+                            Margin="5" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                <i:Interaction.Behaviors>
+                    <is:EventTriggerBehavior EventName="QuerySubmitted" SourceObject="{Binding ElementName=SearchTextBox}">
+                        <is:CallMethodAction MethodName="SearchTextBox_QuerySubmitted" TargetObject="{Binding}"/>
+                    </is:EventTriggerBehavior>
+                </i:Interaction.Behaviors>
+            </AutoSuggestBox>
             <ListBox x:Name="SearchListBox" Grid.Row="1" Margin="5" ItemsSource="{Binding SearchResults}" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid VerticalAlignment="Center" CanDrag="True" HorizontalAlignment="Stretch" Background="Transparent" IsHitTestVisible="True">
+                        <Grid VerticalAlignment="Center" CanDrag="True" HorizontalAlignment="Stretch" Background="Transparent" >
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="50"/>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="60"/>
                             </Grid.ColumnDefinitions>
+                            
+                            <Button Style="{StaticResource IconButton}" IsEnabled="{Binding InLibrary, Converter={StaticResource InvertBool}}">
+                                <i:Interaction.Behaviors>
+                                    <is:EventTriggerBehavior EventName="Click">
+                                        <is:CallMethodAction MethodName="SearchAddButton_Click" TargetObject="{Binding ElementName=SearchListBox, Path=DataContext}"/>
+                                    </is:EventTriggerBehavior>
+                                </i:Interaction.Behaviors>
+                                <Viewbox Width="16">
+                                    <SymbolIcon Symbol="Add" />
+                                </Viewbox>
+                            </Button>
                             <Image Width="45" Height="45" HorizontalAlignment="Center" VerticalAlignment="Stretch"
-                                   Source="{Binding artworkUrl100}" Grid.Column="0"/>
-                            <TextBlock Text="{Binding collectionName}" Grid.Column="1" Margin="4"/>
-                            <Button Content="Add" Grid.Column="2" HorizontalAlignment="Right" x:Name="SearchAddButton" Click="SearchAddButton_Click"/>
+                                   Source="{Binding artworkUrl100}" Grid.Column="1" />
+                            <StackPanel Margin="10,4" Orientation="Vertical" Grid.Column="2" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding collectionName}"/>
+                                <TextBlock Text="{Binding artistName}" Opacity="0.4" FontSize="12"/>
+                            </StackPanel>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

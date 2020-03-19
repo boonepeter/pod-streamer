@@ -51,30 +51,33 @@ namespace Podcaster
             MainP = mainPage;
         }
 
-        public void SearchAddButton_Click(object sender, RoutedEventArgs e)
+        public void SearchAddButton_Click(object sender, RoutedEventArgs args)
         {
-            if (sender.GetType() == typeof(Button))
+            try
             {
-                Button button = (Button)sender;
-                if (button.DataContext.GetType() == typeof(BasePodcast))
-                {
-                    BasePodcast searchResult = (BasePodcast)button.DataContext;
-                    FavVM.AddPodToFav(searchResult);
-                }
+                FrameworkElement element = (FrameworkElement)args.OriginalSource;
+                BasePodcast searchResult = (BasePodcast)element.DataContext;
+                FavVM.AddPodToFav(searchResult);
+                searchResult.InLibrary = true;
             }
-
+            catch
+            {
+                string peter = "error";
+            }
         }
 
-
-        public void SearchTextBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        public void SearchTextBox_QuerySubmitted()
         {
-            List<BasePodcast> results = Itunes.SearchPodcast(sender.Text);
-            ObservableCollection<BasePodcast> listboxItems = new ObservableCollection<BasePodcast>();
-            for (int i = 0; i < results.Count; i++)
+            List<BasePodcast> results = Itunes.SearchPodcast(SearchText);
+
+            SearchResults = new ObservableCollection<BasePodcast>(results);
+            for (int i = 0; i < SearchResults.Count; i++)
             {
-                listboxItems.Add(results[i]);
+                if (FavVM.Favorites.Podcasts.Any(x => x.collectionId == SearchResults[i].collectionId))
+                {
+                    SearchResults[i].InLibrary = true;
+                }
             }
-            SearchResults = listboxItems;
         }
     }
 }
