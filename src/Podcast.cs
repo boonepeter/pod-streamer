@@ -50,6 +50,17 @@ namespace Podcaster
 
     public class Episode : ObservableObject
     {
+        public string title { get; set; }
+        public string author { get; set; }
+        public string description { get; set; }
+        public string subtitle { get; set; }
+        public string summary { get; set; }
+        public string season { get; set; }
+        public string episode { get; set; }
+        public DateTimeOffset pubDate { get; set; }
+        public string category { get; set; }
+        public TimeSpan duration { get; set; }
+
         private bool _HasListened;
         public bool HasListened
         {

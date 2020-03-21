@@ -130,6 +130,9 @@
     </Compile>
     <Compile Include="BasePodcast.cs" />
     <Compile Include="Converters\BoolToVisibility.cs" />
+    <Compile Include="Converters\DateTimeString.cs" />
+    <Compile Include="Converters\NotNullConverter.cs" />
+    <Compile Include="Converters\IsStringEqual.cs" />
     <Compile Include="Converters\InvertBool.cs" />
     <Compile Include="FavoritesVM.cs" />
     <Compile Include="FavoritesPage.xaml.cs">
@@ -154,12 +157,15 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\apple-podcasts.svg" />
     <Content Include="Assets\baseline_headset_black_48dp.png" />
+    <Content Include="Assets\headset-24px.svg" />
     <Content Include="Assets\LargeTile.scale-100.png" />
     <Content Include="Assets\LargeTile.scale-125.png" />
     <Content Include="Assets\LargeTile.scale-150.png" />
     <Content Include="Assets\LargeTile.scale-200.png" />
     <Content Include="Assets\LargeTile.scale-400.png" />
+    <Content Include="Assets\Podcasts_%28iOS%29.svg" />
     <Content Include="Assets\SmallTile.scale-100.png" />
     <Content Include="Assets\SmallTile.scale-125.png" />
     <Content Include="Assets\SmallTile.scale-150.png" />
@@ -195,6 +201,7 @@
     <Content Include="Assets\Square44x44Logo.targetsize-256.png" />
     <Content Include="Assets\Square44x44Logo.targetsize-32.png" />
     <Content Include="Assets\Square44x44Logo.targetsize-48.png" />
+    <Content Include="Assets\StoreLogo.backup.png" />
     <Content Include="Assets\StoreLogo.scale-100.png" />
     <Content Include="Assets\StoreLogo.scale-125.png" />
     <Content Include="Assets\StoreLogo.scale-150.png" />

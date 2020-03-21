@@ -8,8 +8,10 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
+using System.Xml;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Web.Syndication;
+using Windows.UI.Xaml.Controls;
 
 namespace Podcaster
 {
@@ -29,6 +31,98 @@ namespace Podcaster
                 {
                     Episode ep = new Episode();
                     ep.Title = item.Title.Text;
+                    ep.pubDate = item.PublishedDate;
+                    ep.summary = item.Summary.Text;
+                    
+
+
+                    foreach (var value in item.GetXmlDocument(SyndicationFormat.Rss20).ChildNodes)
+                    {
+                        var peter = value;
+                        foreach (var child in peter.ChildNodes)
+                        {
+                            var hello = child;
+                            switch (hello.NodeName)
+                            {
+                                case "title":
+                                    break;
+                                case "description":
+                                    break;
+                                case "enclosure":
+                                    break;
+                                case "guid":
+                                    break;
+                                case "pubDate":
+                                    break;
+                                case "published":
+                                    break;
+                                case "updated":
+                                    break;
+                                case "episodeType":
+                                    break;
+                                case "author":
+                                    break;
+                                case "subtitle":
+                                    break;
+                                case "summary":
+                                    break;
+                                case "duration":
+                                    bool success = false;
+                                    TimeSpan parsed = new TimeSpan();
+                                    if (child.InnerText.Contains(":"))
+                                    {
+                                        string[] times = child.InnerText.Split(':');
+                                        if (times.Length == 2)
+                                        {
+                                            if (Int32.TryParse(times[0], out int mins) && Int32.TryParse(times[1], out int secs))
+                                            {
+                                                success = true;
+                                                parsed = new TimeSpan(0, mins, secs);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            success = TimeSpan.TryParse(child.InnerText, out parsed);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        success = Double.TryParse(child.InnerText, out double dParsed);
+                                        parsed = TimeSpan.FromSeconds(dParsed);
+                                    }
+                                    if (success)
+                                    {
+                                        ep.duration = parsed;
+                                    }
+                                    else
+                                    {
+                                        string helloworld = "catch";
+                                    }
+                                    break;
+                                case "explicit":
+                                    break;
+                                case "image":
+                                    break;
+                                case "season":
+                                    break;
+                                case "episode":
+                                    break;
+                                case "link":
+                                    break;
+                                case "keywords":
+                                    break;
+                                case "category":
+                                    break;
+                                case "content":
+                                    break;
+                                case "thumbnail":
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+                    }
                     if (item.Links.Count > 0)
                     {
                         var links = item.Links;

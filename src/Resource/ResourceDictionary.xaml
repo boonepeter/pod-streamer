@@ -6,6 +6,9 @@
 
     <conv:InvertBool x:Key="InvertBool"/>
     <conv:BoolToVisibility x:Key="BoolToVisibility"/>
+    <conv:IsStringEqual x:Key="IsStringEqual"/>
+    <conv:NotNullConverter x:Key="NotNullConverter"/>
+    <conv:DateTimeString x:Key="DateTimeString"/>
 
     <Style TargetType="Button" x:Key="IconButton">
         <Setter Property="Background" Value="Transparent"/>
@@ -61,4 +64,5 @@
             </Setter.Value>
         </Setter>
     </Style>
+
 </ResourceDictionary>
